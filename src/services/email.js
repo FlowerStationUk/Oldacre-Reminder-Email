@@ -11,7 +11,7 @@ export const sendReminderEmail = async (toEmail, orderData) => {
         const htmlContent = getReminderHtml(orderData);
         const msg = {
             to: toEmail,
-            from: 'info@flowerstation.co.uk',
+            from: 'info@oldacre.co.uk',
             subject: `Payment Reminder: Order ${orderData.name}`,
             html: htmlContent,
         };
