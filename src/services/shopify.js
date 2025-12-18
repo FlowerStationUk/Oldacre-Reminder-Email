@@ -33,7 +33,12 @@ export const fetchUnpaidOrders = async (cursor = null) => {
             email
             statusPageUrl
             currentSubtotalPriceSet { shopMoney { amount } }
-            customer { firstName }
+            customer {
+              firstName
+              metafield(namespace: "custom", key: "stopreminder") {
+                value
+              }
+            }
             
             # Fetch Payment Terms to calculate due date
             paymentTerms {

@@ -22,6 +22,11 @@ export const runReminderJob = async () => {
             const { edges, pageInfo } = data;
             for (const edge of edges) {
                 const order = edge.node;
+                const stopReminder = order.customer?.metafield?.value === 'true';
+                if (stopReminder) {
+                    console.log(`🚫 Skipping Order ${order.name}: Customer has 'stopreminder' enabled.`);
+                    continue;
+                }
                 const paymentSchedule = order.paymentTerms?.paymentSchedules?.nodes?.[0];
                 if (paymentSchedule?.dueAt) {
                     const reminderTargetDate = getReminderDate(paymentSchedule.dueAt);
@@ -32,12 +37,14 @@ export const runReminderJob = async () => {
                             date: today
                         });
                         if (!alreadySent) {
+                            const numericId = order.id.split('/').pop();
+                            const manualOrderUrl = `https://www.flowerstation.co.uk/account/orders/${numericId}`;
                             const emailData = {
                                 name: order.name,
                                 amount: order.currentSubtotalPriceSet?.shopMoney?.amount,
                                 dueDate: rawDueDate,
                                 customerName: order.customer?.firstName || 'Customer',
-                                order_status_url: order.statusPageUrl
+                                order_status_url: manualOrderUrl // Use the constructed URL
                             };
                             const success = await sendReminderEmail(order.email, emailData);
                             if (success) {
