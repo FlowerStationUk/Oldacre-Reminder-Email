@@ -31,6 +31,7 @@ export const fetchUnpaidOrders = async (cursor = null) => {
             id
             name
             email
+            statusPageUrl
             currentSubtotalPriceSet { shopMoney { amount } }
             customer { firstName }
             

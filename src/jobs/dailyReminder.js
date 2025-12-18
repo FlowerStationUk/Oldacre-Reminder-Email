@@ -36,7 +36,8 @@ export const runReminderJob = async () => {
                                 name: order.name,
                                 amount: order.currentSubtotalPriceSet?.shopMoney?.amount,
                                 dueDate: rawDueDate,
-                                customerName: order.customer?.firstName || 'Customer'
+                                customerName: order.customer?.firstName || 'Customer',
+                                order_status_url: order.statusPageUrl
                             };
                             const success = await sendReminderEmail(order.email, emailData);
                             if (success) {
