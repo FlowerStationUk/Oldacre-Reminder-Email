@@ -37,14 +37,12 @@ export const runReminderJob = async () => {
                             date: today
                         });
                         if (!alreadySent) {
-                            const numericId = order.id.split('/').pop();
-                            const manualOrderUrl = `https://www.flowerstation.co.uk/account/orders/${numericId}`;
                             const emailData = {
                                 name: order.name,
                                 amount: order.currentSubtotalPriceSet?.shopMoney?.amount,
                                 dueDate: rawDueDate,
                                 customerName: order.customer?.firstName || 'Customer',
-                                order_status_url: manualOrderUrl // Use the constructed URL
+                                order_status_url: order.statusPageUrl
                             };
                             const success = await sendReminderEmail(order.email, emailData);
                             if (success) {
