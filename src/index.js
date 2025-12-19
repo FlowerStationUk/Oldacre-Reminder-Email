@@ -9,3 +9,4 @@ cron.schedule('0 12 * * *', async () => {
         console.error('❌ CRON FAILED:', error);
     }
 });
+console.log('✅ Checking server current time:', new Date().toLocaleString());
