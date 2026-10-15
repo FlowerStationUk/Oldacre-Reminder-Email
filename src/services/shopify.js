@@ -7,7 +7,7 @@ const shopify = shopifyApi({
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
   scopes: ['read_orders'],
   hostName: 'localhost',
-  apiVersion: ApiVersion.October24,
+  apiVersion: ApiVersion.October26,
   isEmbeddedApp: false,
 });
 const session = new Session({
