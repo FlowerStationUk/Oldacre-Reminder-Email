@@ -24,7 +24,7 @@ export const getReminderHtml = (orderData) => {
       <p>This is a friendly reminder regarding your order <strong>${orderData.name}</strong>. Your payment is due in 7 days.</p>
       
       <p style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
-        <strong>Amount Due:</strong> £${orderData.amount}<br>
+        <strong>Amount Due:</strong> £${Number(orderData.amount).toFixed(2)}<br>
         <strong>Due Date:</strong> ${formattedDate}
       </p>
 

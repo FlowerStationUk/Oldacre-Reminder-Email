@@ -21,7 +21,7 @@ const getClient = () => new shopify.clients.Graphql({ session });
 export const fetchUnpaidOrders = async (cursor = null) => {
   const query = `
     query ($cursor: String) {
-      orders(first: 50, after: $cursor, query: "status:open AND payment_status:pending") {
+      orders(first: 50, after: $cursor, query: "status:open AND (financial_status:pending OR financial_status:partially_paid)") {
         pageInfo {
           hasNextPage
           endCursor
@@ -32,7 +32,8 @@ export const fetchUnpaidOrders = async (cursor = null) => {
             name
             email
             statusPageUrl
-            currentSubtotalPriceSet { shopMoney { amount } }
+            displayFinancialStatus
+            totalOutstandingSet { shopMoney { amount } }
             customer {
               firstName
               metafield(namespace: "custom", key: "stopreminder") {
@@ -43,7 +44,7 @@ export const fetchUnpaidOrders = async (cursor = null) => {
             # Fetch Payment Terms to calculate due date
             paymentTerms {
               paymentSchedules(first: 1) {
-                nodes { dueAt }
+                nodes { dueAt completedAt }
               }
             }
           }
@@ -55,5 +56,10 @@ export const fetchUnpaidOrders = async (cursor = null) => {
   const response = await client.request(query, {
     variables: { cursor },
   });
+  // Shopify silently ignores invalid search fields, so fail loudly instead
+  const warnings = response.extensions?.search?.flatMap((s) => s.warnings || []) || [];
+  if (warnings.length) {
+    throw new Error(`Shopify search warnings: ${JSON.stringify(warnings)}`);
+  }
   return response.data.orders;
 };
